@@ -1,4 +1,0 @@
-import 
-class SRRM(nn.Module):
-  def__init__(self, scene_classes=67):
-    super(RGB)
