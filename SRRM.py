@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torchvision import transforms
 import torchvision.transforms.functional as TF
-from Libs.resnet_cbam import resnet50_cbam
+import resnet50_cbam
 
 class SemBranch(nn.Module):
     """
@@ -12,9 +12,6 @@ class SemBranch(nn.Module):
     def __init__(self, scene_classes, semantic_classes=152):
         super(SemBranch, self).__init__()
         base = resnet50_cbam()
-        # base = resnet50
-        # base = resnet.resnet50()
-
 
         # Semantic Branch
         self.in_block_sem = nn.Sequential(
@@ -22,7 +19,6 @@ class SemBranch(nn.Module):
             nn.Conv2d(semantic_classes, 256, kernel_size=7, stride=2,  padding=3, bias=False),
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True),
-            # nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         )
 
         self.in_block_sem_1 = base.layer2
@@ -55,15 +51,8 @@ class SemBranch(nn.Module):
         fea_map = y
 
         return act_sem, fea_map
-        # return act_sem
 
     def loss(self, x, target):
-        """
-        Funtion to comput the loss
-        :param x: Predictions obtained by the network
-        :param target: Ground-truth scene recognition labels
-        :return: Loss value
-        """
         # Check inputs
         assert (x.shape[0] == target.shape[0])
 
